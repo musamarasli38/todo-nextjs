@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "pnpm run vercel-build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "vercel-build": "pnpm run build"
   },
   "dependencies": {
     "@radix-ui/react-icons": "^1.3.0",
