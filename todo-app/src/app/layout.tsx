@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased mx-auto`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased mx-auto flex flex-col min-h-screen`}
       >
         <main className="mx-auto py-4 space-y-3"></main>
         <Navbar></Navbar>
