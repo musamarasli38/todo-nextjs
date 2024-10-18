@@ -1,36 +1,86 @@
 import { useState, useEffect } from "react";
+import { Task } from "@/types/task";
 
-interface UseFetchResult {
-  data: unknown | null;
+const baseUrl = "http://localhost:3001/tasks";
+
+interface UseFetchResult<T> {
+  data: T | null;
   isPending: boolean;
-  error: unknown | null;
+  error: string | null;
 }
 
-const useFetch = (url: string): UseFetchResult => {
-  const [data, setData] = useState(null);
+interface FetchOptions {
+  method?: string;
+  headers?: Record<string, string>;
+  body?: string;
+}
+
+export const useFetch = <T,>(
+  url: string,
+  options?: FetchOptions
+): UseFetchResult<T> => {
+  const [data, setData] = useState<T | null>(null);
   const [isPending, setIsPending] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(url)
-      .then((res) => {
+    const fetchData = async () => {
+      setIsPending(true);
+      setError(null);
+
+      try {
+        const res = await fetch(url, options);
         if (!res.ok) {
-          throw Error("could not fetch the data for that resource");
+          throw new Error("Failed to fetch the data.");
         }
-        return res.json();
-      })
-      .then((data) => {
-        setData(data);
+        const result = await res.json();
+        setData(result);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Unknown error");
+      } finally {
         setIsPending(false);
-        setError(null);
-      })
-      .catch((err) => {
-        setIsPending(false);
-        setError(err.message);
-      });
-  }, [url]);
+      }
+    };
+
+    fetchData();
+  }, [url, options]);
 
   return { data, isPending, error };
 };
 
-export default useFetch;
+export const fetchTasks = async (): Promise<Task[]> => {
+  const res = await fetch(baseUrl);
+  if (!res.ok) throw new Error("Failed to fetch tasks");
+  return await res.json();
+};
+
+export const addTask = async (task: Omit<Task, "id">): Promise<Task> => {
+  const res = await fetch(baseUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(task),
+  });
+  if (!res.ok) throw new Error("Failed to add task");
+  return await res.json();
+};
+
+export const updateTask = async (task: Task): Promise<Task> => {
+  const res = await fetch(`${baseUrl}/${task.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(task),
+  });
+  if (!res.ok) throw new Error("Failed to update task");
+  return await res.json();
+};
+
+export const deleteTask = async (id: string): Promise<void> => {
+  const res = await fetch(`${baseUrl}/${id}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) throw new Error("Failed to delete task");
+};
