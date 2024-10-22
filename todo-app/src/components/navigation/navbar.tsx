@@ -14,6 +14,7 @@ export function Navbar() {
             <MenubarItem>Logout</MenubarItem>
           </MenubarContent>
         </MenubarMenu>
+        .<div className="02"></div>
       </Menubar>
     </div>
   );

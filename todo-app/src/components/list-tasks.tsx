@@ -1,9 +1,9 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader } from "./ui/card";
-import { Task } from "@/types/task";
-import { fetchTasks } from "@/services/taskService";
-
+import { Task } from "../../types/task";
+import { fetchTasks } from "@services/task-service";
 export default function ListTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isPending, setIsPending] = useState(true);
@@ -30,9 +30,7 @@ export default function ListTasks() {
         <h1 className="text-3xl text-center">Your To-do List</h1>
       </div>
       <div>
-        <Link href="/task">
-          <a>Add New Task</a>
-        </Link>
+        <Link href="/task">Add New Task</Link>
         {isPending ? (
           <p>Loading tasks...</p>
         ) : error ? (

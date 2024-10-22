@@ -7,7 +7,7 @@ type TaskProps = ComponentProps<"div"> & {
   date: string;
 };
 
-export function Task({ title, description, date }: TaskProps) {
+export function TaskForm({ title, description, date }: TaskProps) {
   return (
     <Card className="px-16 w-full">
       <CardHeader>

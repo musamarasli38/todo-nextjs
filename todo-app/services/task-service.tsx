@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Task } from "@/types/task";
+import { Task } from "@../../types/task";
 
 const baseUrl = "http://localhost:3001/tasks";
 
-interface UseFetchResult<T> {
-  data: T | null;
+interface UseFetchResult<Task> {
+  data: Task | null;
   isPending: boolean;
   error: string | null;
 }
@@ -15,11 +15,11 @@ interface FetchOptions {
   body?: string;
 }
 
-export const useFetch = <T,>(
+export const useFetch = <Task,>(
   url: string,
   options?: FetchOptions
-): UseFetchResult<T> => {
-  const [data, setData] = useState<T | null>(null);
+): UseFetchResult<Task> => {
+  const [data, setData] = useState<Task | null>(null);
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
