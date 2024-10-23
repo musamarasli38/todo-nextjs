@@ -40,9 +40,9 @@ export default function ListTasks() {
             <h2>For Tomorrow:</h2>
             {tasks.length > 0 ? (
               tasks.map((task) => (
-                <Card key={task.id}>
-                  <CardHeader>
-                    <h3>{task.title}</h3>
+                <Card key={task.id} className="space-y-0 my-4">
+                  <CardHeader className="p2">
+                    <h3 className="text-xl font-bold">{task.title}</h3>
                   </CardHeader>
                   <CardContent>
                     <p>Date: {new Date(task.date).toLocaleDateString()}</p>
