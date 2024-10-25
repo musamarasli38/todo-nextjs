@@ -1,34 +1,38 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Task } from "../../types/task";
 import { fetchTasks } from "@services/task-service";
+import { TaskForm } from "./task-form";
 export default function ListTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const loadTasks = useCallback(async () => {
+    setIsPending(true);
+    setError(null);
+
+    try {
+      const fetchedTasks = await fetchTasks();
+      setTasks(fetchedTasks);
+    } catch (err) {
+      setError("Failed to load tasks");
+    } finally {
+      setIsPending(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const loadTasks = async () => {
-      try {
-        const fetchedTasks = await fetchTasks();
-        setTasks(fetchedTasks);
-      } catch (err) {
-        setError("Failed to load tasks");
-      } finally {
-        setIsPending(false);
-      }
-    };
-
     loadTasks();
-  }, []);
+  }, [loadTasks]);
 
   return (
     <div>
       <div>
         <h1 className="text-3xl text-center">Your To-do List</h1>
       </div>
+      <TaskForm onTaskAdded={loadTasks}></TaskForm>
       <div>
         <Link href="/task">Add New Task</Link>
         {isPending ? (

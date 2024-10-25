@@ -1,4 +1,52 @@
 {
-  "users": [{ "id": 1, "username": "user1", "password": "passworduser1" }],
-  "tasks": [{ "id": 1, "title": "task1", "completed": false }]
+  "users": [
+    {
+      "id": "1",
+      "username": "user1",
+      "password": "passworduser1"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "1",
+      "title": "task1",
+      "completed": false
+    },
+    {
+      "id": "c7a5",
+      "title": "test",
+      "description": "ets",
+      "date": "2024-10-24T00:00:00.000Z"
+    },
+    {
+      "id": "daac",
+      "title": "25",
+      "description": "qsdf",
+      "date": "2024-10-23T00:00:00.000Z"
+    },
+    {
+      "id": "8daf",
+      "title": "25",
+      "description": "qsdf",
+      "date": "2024-10-23T00:00:00.000Z"
+    },
+    {
+      "id": "2409",
+      "title": "po",
+      "description": "po",
+      "date": "2024-10-29T00:00:00.000Z"
+    },
+    {
+      "id": "67d9",
+      "title": "qsgqg",
+      "description": "qsdfqsdg",
+      "date": "2024-10-29T00:00:00.000Z"
+    },
+    {
+      "id": "fa62",
+      "title": "1263",
+      "description": "fdfsdf",
+      "date": "2024-10-23T00:00:00.000Z"
+    }
+  ]
 }
