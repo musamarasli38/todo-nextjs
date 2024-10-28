@@ -22,17 +22,16 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode;  
 }>) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased mx-auto flex flex-col min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased mx-auto flex flex-col min-h-screen space-y-4`}
       >
-        <main className="mx-auto py-4 space-y-3"></main>
+        <main className=" py-4 space-y-3 px-10"></main>
         <Navbar></Navbar>
         <div>
-          <h1 className="text-3xl text-center">Todo App</h1>
         </div>
         {children}
       </body>

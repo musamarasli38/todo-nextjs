@@ -4,8 +4,10 @@ import { GiHamburgerMenu } from "react-icons/gi";
 export function Navbar() {
   return (
     <div>
-      <Menubar className="static justify-center">
+      <Menubar className="static justify-evenly">
         <MenubarMenu>
+        <h1 className="text-3xl text-center">Todo App</h1>
+
           <MenubarTrigger>
             Menu &nbsp; <GiHamburgerMenu />
           </MenubarTrigger>
