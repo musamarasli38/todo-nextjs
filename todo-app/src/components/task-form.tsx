@@ -2,8 +2,8 @@
 
 import { ComponentProps, useState } from "react";
 import { Card, CardContent, CardHeader } from "./ui/card";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "./ui/accordion";
 import { addTask } from "@services/task-service";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "./ui/accordion";
 
 type TaskProps = ComponentProps<"div"> & {
   onTaskAdded: () => void;
@@ -13,6 +13,7 @@ export function TaskForm({ onTaskAdded }: TaskProps) {
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
   const [taskDate, setTaskDate] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleSave = async () => {
     try {
@@ -22,54 +23,57 @@ export function TaskForm({ onTaskAdded }: TaskProps) {
         date: new Date(taskDate),
       };
       await addTask(newTask);
-      setTimeout(() => onTaskAdded(), 200);
+      onTaskAdded();
+
       setTaskTitle("");
       setTaskDescription("");
       setTaskDate("");
+
+      setIsOpen(false);
     } catch (error) {
       console.error("Failed to add task:", error);
     }
   };
 
   return (
-    <Accordion type="single" collapsible>
+    <Accordion type="single" collapsible value={isOpen ? "task-form" : undefined} onValueChange={() => setIsOpen(!isOpen)}>
       <AccordionItem value="task-form">
-        <AccordionTrigger className="bg-primary text-white p-4 rounded-lg">
-          Add New Task
+        <AccordionTrigger onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? "Close Task Form" : "Add New Task"}
         </AccordionTrigger>
-        <AccordionContent>
-          <Card className="px-16 w-full mt-4">
+        <AccordionContent className="w-full">
+          <Card className="px-16 w-full">
             <CardHeader>
               <label htmlFor="title">Title</label>
               <input
                 type="text"
-                className="border border-gray-300 rounded-lg p-2 w-full"
+                className="border border-gray-300 rounded-lg p-2"
                 name="title"
                 value={taskTitle}
                 onChange={(e) => setTaskTitle(e.target.value)}
-              />
+              ></input>
             </CardHeader>
-            <CardContent className="flex flex-col flex-wrap space-y-3">
+            <CardContent className="flex flex-col space-y-3">
               <label htmlFor="description">Description</label>
               <textarea
-                className="border border-gray-300 rounded-lg p-2 w-full"
+                className="border border-gray-300 rounded-lg p-2"
                 rows={4}
                 name="description"
                 value={taskDescription}
                 onChange={(e) => setTaskDescription(e.target.value)}
                 placeholder="Enter task description"
-              />
+              ></textarea>
               <label htmlFor="date">Date</label>
               <input
                 type="date"
-                className="border border-gray-300 rounded-lg p-2 w-full"
+                className="border border-gray-300 rounded-lg p-2"
                 name="date"
                 value={taskDate}
                 onChange={(e) => setTaskDate(e.target.value)}
-              />
+              ></input>
               <button
                 onClick={handleSave}
-                className="btn-primary bg-primary text-white rounded-lg self-start px-4 py-2 mt-2"
+                className="btn-primary bg-primary text-white rounded-lg self-start px-4 py-2"
               >
                 Save
               </button>

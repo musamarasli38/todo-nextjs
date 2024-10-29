@@ -53,6 +53,24 @@
       "title": "test",
       "description": "qsdf",
       "date": "2024-10-30T00:00:00.000Z"
+    },
+    {
+      "id": "dac1",
+      "title": "Wash dishes",
+      "description": "Wash dishes in the kitchen",
+      "date": "2024-10-16T00:00:00.000Z"
+    },
+    {
+      "id": "2f87",
+      "title": "Watch tutorial",
+      "description": "Watch tutorial on Youtube",
+      "date": "2024-10-31T00:00:00.000Z"
+    },
+    {
+      "id": "f3a1",
+      "title": "Paint wall",
+      "description": "Paint the kitchen walls white",
+      "date": "2024-10-31T00:00:00.000Z"
     }
   ]
 }

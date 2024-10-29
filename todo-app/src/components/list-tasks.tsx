@@ -28,37 +28,39 @@ export default function ListTasks() {
   }, [loadTasks]);
 
   return (
-    <div className="flex flex-col px-4">
+    <div className="flex flex-col px-4 gap-4">
       <div>
-        <h1 className="text-3xl text-center">Your To-do List</h1>
+        <h1 className="text-3xl text-center pb-10">Your To-do List</h1>
       </div>
-      <TaskForm onTaskAdded={loadTasks}></TaskForm>
+      <TaskForm className="" onTaskAdded={loadTasks}></TaskForm>
       <div>
       <h2>Tasks:</h2>
-
-        {isPending ? (
-          <p>Loading tasks...</p>
-        ) : error ? (
-          <p>{error}</p>
-        ) : (
-          <div className="flex flex-wrap justify-evenly p-4 gap-4">
-            {tasks.length > 0 ? (
-              tasks.map((task) => (
-                <Card key={task.id} className=" bg-black text-white flex flex-row  items-center">
-                  <CardHeader className="">
-                    <h3 className="text-xl font-bold">{task.title}</h3>
-                  </CardHeader>
-                  <CardContent>
-                    <p>Date: {new Date(task.date).toLocaleDateString()}</p>
-                    <p>Description: {task.description}</p>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <p>No tasks found.</p>
-            )}
-          </div>
-        )}
+<div className="flex flex-col gap-4">
+  
+          {isPending ? (
+            <p>Loading tasks...</p>
+          ) : error ? (
+            <p>{error}</p>
+          ) : (
+            <div className="flex flex-wrap justify-evenly p-4">
+              {tasks.length > 0 ? (
+                tasks.map((task) => (
+                  <Card key={task.id} className=" bg-black text-white flex flex-row p-2  items-center">
+                    <CardHeader className="">
+                      <h3 className="text-xl font-bold">{task.title}</h3>
+                    </CardHeader>
+                    <CardContent>
+                      <p>Date: {new Date(task.date).toLocaleDateString()}</p>
+                      <p>Description: {task.description}</p>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <p>No tasks found.</p>
+              )}
+            </div>
+          )}
+</div>
       </div>
     </div>
   );
