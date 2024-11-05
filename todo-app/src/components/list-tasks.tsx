@@ -11,6 +11,10 @@ export default function ListTasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+  const [editedTitle, setEditedTitle] = useState<string>("");
+  const [editedDescription, setEditedDescription] = useState<string>("");
+  const [editedDate, setEditedDate] = useState<Date>(new Date());
 
   const loadTasks = useCallback(async () => {
     setIsPending(true);
@@ -41,14 +45,30 @@ export default function ListTasks() {
   };
 
   // Handler to update a task
-  const handleUpdate = async (task: Task) => {
+  const handleEdit = (task: Task) => {
+    setEditingTaskId(task.id);
+    setEditedTitle(task.title);
+    setEditedDescription(task.description);
+    setEditedDate(task.date);
+  };
+  const handleSave = async () => {
+    if (!editingTaskId) return;
     try {
-      const updatedTask = { ...task, title: "Updated Title" }; // Add your update logic here
+      const updatedTask = {
+        id: editingTaskId,
+        title: editedTitle,
+        description: editedDescription,
+        date: editedDate,
+      };
       await updateTask(updatedTask);
       loadTasks(); // Refresh the list after updating
     } catch (err) {
       console.error("Failed to update task:", err);
     }
+  };
+
+  const handleCancel = () => {
+    setEditingTaskId(null);
   };
 
   return (
@@ -81,23 +101,43 @@ export default function ListTasks() {
                         <Calendar className="inline mr-2" />
                         {new Date(task.date).toLocaleDateString()}
                       </p>
-                      <p>Description: {task.description}</p>
+                      <p>
+                        <label>Description:</label>
+                        <input
+                          type="text"
+                          defaultValue={task.description}
+                        ></input>
+                      </p>
                     </CardContent>
                     <div className="flex gap-2">
                       {/* Update Button */}
-                      <Button
-                        variant="ghost"
-                        onClick={() => handleUpdate(task)}
-                      >
-                        <Edit className="text-blue-500" />
-                      </Button>
-                      {/* Delete Button */}
-                      <Button
-                        variant="ghost"
-                        onClick={() => handleDelete(task.id)}
-                      >
-                        <Trash2 className="text-red-500" />
-                      </Button>
+                      {editingTaskId === task.id ? (
+                        <>
+                          <Button variant="ghost" onClick={handleSave}>
+                            Save
+                          </Button>
+                          <Button variant="ghost" onClick={handleCancel}>
+                            Cancel
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            variant="ghost"
+                            onClick={() => handleEdit(task)}
+                          >
+                            <Edit className="text-blue-500" />
+                          </Button>
+
+                          {/* Delete Button */}
+                          <Button
+                            variant="ghost"
+                            onClick={() => handleDelete(task.id)}
+                          >
+                            <Trash2 className="text-red-500" />
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </Card>
                 ))
