@@ -1,6 +1,10 @@
 export  interface Task {
-  id: string;
+  task_id: number;
+  user_id: number;
   title: string;
   description: string;
-  date: Date;
+  due_date: Date;
+  completed: boolean;
+  created_at: Date;
+  updated_at: Date;
 }

@@ -3,7 +3,12 @@
 import { ComponentProps, useState } from "react";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { addTask } from "@services/task-service";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "./ui/accordion";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "./ui/accordion";
 
 type TaskProps = ComponentProps<"div"> & {
   onTaskAdded: () => void;
@@ -18,9 +23,14 @@ export function TaskForm({ onTaskAdded }: TaskProps) {
   const handleSave = async () => {
     try {
       const newTask = {
+        task_id: 0,
+        user_id: 1,
         title: taskTitle,
         description: taskDescription,
-        date: new Date(taskDate),
+        due_date: new Date(taskDate),
+        completed: false,
+        created_at: new Date(),
+        updated_at: new Date(),
       };
       await addTask(newTask);
       onTaskAdded();
@@ -36,7 +46,12 @@ export function TaskForm({ onTaskAdded }: TaskProps) {
   };
 
   return (
-    <Accordion type="single" collapsible value={isOpen ? "task-form" : undefined} onValueChange={() => setIsOpen(!isOpen)}>
+    <Accordion
+      type="single"
+      collapsible
+      value={isOpen ? "task-form" : undefined}
+      onValueChange={() => setIsOpen(!isOpen)}
+    >
       <AccordionItem value="task-form">
         <AccordionTrigger onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? "Close Task Form" : "Add New Task"}

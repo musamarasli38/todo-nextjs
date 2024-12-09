@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Task } from "../../types/task";
-import { fetchTasks, deleteTask, updateTask } from "@services/task-service"; // import deleteTask and updateTask
+import { fetchTasks, deleteTask, updateTask } from "@services/task-service";
 import { TaskForm } from "./task-form";
 import { Calendar, Trash2, Edit } from "lucide-react";
 import { Button } from "./ui/button";
@@ -22,7 +22,7 @@ export default function ListTasks() {
 
     try {
       const fetchedTasks = await fetchTasks();
-      setTasks(fetchedTasks);
+      setTasks(fetchedTasks.data || []);
     } catch (err) {
       setError("Failed to load tasks");
     } finally {
@@ -34,34 +34,38 @@ export default function ListTasks() {
     loadTasks();
   }, [loadTasks]);
 
-  // Handler to delete a task
   const handleDelete = async (taskId: string) => {
     try {
       await deleteTask(taskId);
-      loadTasks(); // Refresh the list after deletion
+      loadTasks();
     } catch (err) {
       console.error("Failed to delete task:", err);
     }
   };
 
-  // Handler to update a task
   const handleEdit = (task: Task) => {
-    setEditingTaskId(task.id);
+    setEditingTaskId(String(task.task_id));
     setEditedTitle(task.title);
     setEditedDescription(task.description);
-    setEditedDate(task.date);
+    setEditedDate(task.due_date);
   };
+
   const handleSave = async () => {
     if (!editingTaskId) return;
     try {
-      const updatedTask = {
-        id: editingTaskId,
+      const updatedTask: Task = {
+        task_id: parseInt(editingTaskId),
+        user_id: 1,
         title: editedTitle,
         description: editedDescription,
-        date: editedDate,
+        updated_at: new Date(),
+        created_at: new Date(),
+        due_date: editedDate,
+        completed: false,
       };
       await updateTask(updatedTask);
-      loadTasks(); // Refresh the list after updating
+      loadTasks();
+      handleCancel();
     } catch (err) {
       console.error("Failed to update task:", err);
     }
@@ -69,6 +73,15 @@ export default function ListTasks() {
 
   const handleCancel = () => {
     setEditingTaskId(null);
+  };
+
+  const handleToggleComplete = async (taskId: number, completed: boolean) => {
+    try {
+      await updateTask({ task_id: taskId, completed });
+      loadTasks();
+    } catch (err) {
+      console.error("Failed to update task status:", err);
+    }
   };
 
   return (
@@ -90,8 +103,10 @@ export default function ListTasks() {
               {tasks.length > 0 ? (
                 tasks.map((task) => (
                   <Card
-                    key={task.id}
-                    className="bg-black text-white flex flex-row p-2 items-center"
+                    key={task.task_id}
+                    className={`bg-black text-white flex flex-row p-2 items-center ${
+                      task.completed ? "opacity-50" : ""
+                    }`}
                   >
                     <CardHeader>
                       <h3 className="text-xl font-bold">{task.title}</h3>
@@ -99,19 +114,29 @@ export default function ListTasks() {
                     <CardContent>
                       <p>
                         <Calendar className="inline mr-2" />
-                        {new Date(task.date).toLocaleDateString()}
+                        {new Date(task.due_date).toLocaleDateString()}
                       </p>
                       <p>
                         <label>Description:</label>
                         <input
                           type="text"
-                          defaultValue={task.description}
-                        ></input>
+                          value={
+                            Number(editingTaskId) === task.task_id
+                              ? editedDescription
+                              : task.description
+                          }
+                          readOnly={Number(editingTaskId) !== task.task_id}
+                          className={`${
+                            Number(editingTaskId) !== task.task_id
+                              ? "pointer-events-none outline-none bg-slate-400 font-bold text-black"
+                              : ""
+                          }`}
+                          onChange={(e) => setEditedDescription(e.target.value)}
+                        />
                       </p>
                     </CardContent>
                     <div className="flex gap-2">
-                      {/* Update Button */}
-                      {editingTaskId === task.id ? (
+                      {Number(editingTaskId) === task.task_id ? (
                         <>
                           <Button variant="ghost" onClick={handleSave}>
                             Save
@@ -128,14 +153,25 @@ export default function ListTasks() {
                           >
                             <Edit className="text-blue-500" />
                           </Button>
-
-                          {/* Delete Button */}
                           <Button
                             variant="ghost"
-                            onClick={() => handleDelete(task.id)}
+                            onClick={() =>
+                              handleDelete(task.task_id.toString())
+                            }
                           >
                             <Trash2 className="text-red-500" />
                           </Button>
+                          <input
+                            type="checkbox"
+                            checked={task.completed}
+                            onChange={(e) =>
+                              handleToggleComplete(
+                                task.task_id,
+                                e.target.checked
+                              )
+                            }
+                          />
+                          <label>Completed</label>
                         </>
                       )}
                     </div>
