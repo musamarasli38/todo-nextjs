@@ -1,6 +1,13 @@
 "use client";
+
 import React, { useEffect, useState, useCallback } from "react";
 import { Card, CardContent, CardHeader } from "./ui/card";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "./ui/accordion";
 import { Task } from "../../types/task";
 import { fetchTasks, deleteTask, updateTask } from "@services/task-service";
 import { TaskForm } from "./task-form";
@@ -12,9 +19,6 @@ export default function ListTasks() {
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
-  const [editedTitle, setEditedTitle] = useState<string>("");
-  const [editedDescription, setEditedDescription] = useState<string>("");
-  const [editedDate, setEditedDate] = useState<Date>(new Date());
 
   const loadTasks = useCallback(async () => {
     setIsPending(true);
@@ -43,29 +47,15 @@ export default function ListTasks() {
     }
   };
 
-  const handleEdit = (task: Task) => {
-    setEditingTaskId(String(task.task_id));
-    setEditedTitle(task.title);
-    setEditedDescription(task.description);
-    setEditedDate(task.due_date);
+  const handleEdit = (taskId: string) => {
+    setEditingTaskId(taskId);
   };
 
-  const handleSave = async () => {
-    if (!editingTaskId) return;
+  const handleSave = async (updatedTask: Task) => {
     try {
-      const updatedTask: Task = {
-        task_id: parseInt(editingTaskId),
-        user_id: 1,
-        title: editedTitle,
-        description: editedDescription,
-        updated_at: new Date(),
-        created_at: new Date(),
-        due_date: editedDate,
-        completed: false,
-      };
       await updateTask(updatedTask);
       loadTasks();
-      handleCancel();
+      setEditingTaskId(null);
     } catch (err) {
       console.error("Failed to update task:", err);
     }
@@ -73,15 +63,6 @@ export default function ListTasks() {
 
   const handleCancel = () => {
     setEditingTaskId(null);
-  };
-
-  const handleToggleComplete = async (taskId: number, completed: boolean) => {
-    try {
-      await updateTask({ task_id: taskId, completed });
-      loadTasks();
-    } catch (err) {
-      console.error("Failed to update task status:", err);
-    }
   };
 
   return (
@@ -102,80 +83,57 @@ export default function ListTasks() {
             <div className="flex flex-wrap justify-evenly p-4">
               {tasks.length > 0 ? (
                 tasks.map((task) => (
-                  <Card
-                    key={task.task_id}
-                    className={`bg-black text-white flex flex-row p-2 items-center ${
-                      task.completed ? "opacity-50" : ""
-                    }`}
-                  >
-                    <CardHeader>
-                      <h3 className="text-xl font-bold">{task.title}</h3>
-                    </CardHeader>
-                    <CardContent>
-                      <p>
-                        <Calendar className="inline mr-2" />
-                        {new Date(task.due_date).toLocaleDateString()}
-                      </p>
-                      <p>
-                        <label>Description:</label>
-                        <input
-                          type="text"
-                          value={
-                            Number(editingTaskId) === task.task_id
-                              ? editedDescription
-                              : task.description
-                          }
-                          readOnly={Number(editingTaskId) !== task.task_id}
-                          className={`${
-                            Number(editingTaskId) !== task.task_id
-                              ? "pointer-events-none outline-none bg-slate-400 font-bold text-black"
-                              : ""
-                          }`}
-                          onChange={(e) => setEditedDescription(e.target.value)}
-                        />
-                      </p>
-                    </CardContent>
-                    <div className="flex gap-2">
-                      {Number(editingTaskId) === task.task_id ? (
-                        <>
-                          <Button variant="ghost" onClick={handleSave}>
-                            Save
-                          </Button>
-                          <Button variant="ghost" onClick={handleCancel}>
-                            Cancel
-                          </Button>
-                        </>
-                      ) : (
-                        <>
-                          <Button
-                            variant="ghost"
-                            onClick={() => handleEdit(task)}
-                          >
-                            <Edit className="text-blue-500" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            onClick={() =>
-                              handleDelete(task.task_id.toString())
-                            }
-                          >
-                            <Trash2 className="text-red-500" />
-                          </Button>
-                          <input
-                            type="checkbox"
-                            checked={task.completed}
-                            onChange={(e) =>
-                              handleToggleComplete(
-                                task.task_id,
-                                e.target.checked
-                              )
-                            }
+                  <Accordion key={task.task_id} type="single" collapsible>
+                    <AccordionItem value={String(task.task_id)}>
+                      <AccordionTrigger>
+                        <h3 className="text-xl font-bold">{task.title}</h3>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        {editingTaskId === String(task.task_id) ? (
+                          <TaskForm
+                            onTaskAdded={loadTasks}
+                            task={{
+                              ...task,
+                              due_date: new Date(task.due_date),
+                            }}
+                            onSave={handleSave}
+                            onCancel={handleCancel}
                           />
-                          <label>Completed</label>
-                        </>
-                      )}
-                    </div>
-                  </Card>
+                        ) : (
+                          <Card className="bg-black text-white flex flex-col p-4">
+                            <CardHeader>
+                              <h3 className="text-xl font-bold">
+                                {task.title}
+                              </h3>
+                            </CardHeader>
+                            <CardContent>
+                              <p>
+                                <Calendar className="inline mr-2" />
+                                {new Date(task.due_date).toLocaleDateString()}
+                              </p>
+                              <p>{task.description}</p>
+                            </CardContent>
+                            <div className="flex gap-2">
+                              <Button
+                                variant="ghost"
+                                onClick={() => handleEdit(String(task.task_id))}
+                              >
+                                <Edit className="text-blue-500" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                onClick={() =>
+                                  handleDelete(task.task_id.toString())
+                                }
+                              >
+                                <Trash2 className="text-red-500" />
+                              </Button>
+                            </div>
+                          </Card>
+                        )}
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 ))
               ) : (
                 <p>No tasks found.</p>

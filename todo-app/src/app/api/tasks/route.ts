@@ -82,7 +82,7 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: 'Task ID is required' }, { status: 400 });
     }
 
-    const result = await pool.query('DELETE FROM tasks WHERE id = $1', [id]);
+    const result = await pool.query('DELETE FROM tasks WHERE task_id = $1', [id]);
     if (result.rowCount === 0) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 });
     }
