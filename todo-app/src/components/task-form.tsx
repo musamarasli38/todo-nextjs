@@ -1,8 +1,10 @@
 "use client";
 
-import { ComponentProps, useState } from "react";
+import { useState } from "react";
+/*import { addTask } from "@services/task-service";*/
 import { Card, CardContent, CardHeader } from "./ui/card";
-import { addTask } from "@services/task-service";
+
+import { Task } from "../../types/task";
 
 type TaskFormProps = {
   onTaskAdded: () => void;
@@ -36,7 +38,7 @@ export function TaskForm({
       };
       onSave(updatedTask);
     } else {
-      // Logic for adding a new task
+      onTaskAdded();
     }
   };
 
