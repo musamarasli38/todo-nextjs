@@ -23,7 +23,7 @@ export const fetchTasks = async (): Promise<ApiResponse<Task[]>> => {
 };
 
 export const addTask = async (
-  task: Omit<Task, "id">
+  task: Omit<Task, "task_id">
 ): Promise<ApiResponse<Task[]>> => {
   try {
     const res = await fetch(baseUrl, {
