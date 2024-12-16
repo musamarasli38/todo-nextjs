@@ -70,8 +70,17 @@ export default function ListTasks() {
       <div>
         <h1 className="text-3xl text-center pb-10">Your To-do List</h1>
       </div>
-      <TaskForm onTaskAdded={loadTasks} />
+      <Accordion type="single" collapsible className="w-full ">
+        <AccordionItem value="create">
+          <AccordionTrigger>
+            <h3 className="text-xl font-bold">Create Task</h3>
+          </AccordionTrigger>
 
+          <AccordionContent>
+            <TaskForm onTaskAdded={loadTasks} />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
       <div>
         <h2>Tasks:</h2>
         <div className="flex flex-col gap-4">

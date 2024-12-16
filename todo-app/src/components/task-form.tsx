@@ -85,7 +85,7 @@ export function TaskForm({
           <button className="" onClick={handleSave}>
             Save
           </button>
-          {onCancel && <button onClick={onCancel}>Cancel</button>}
+          <button onClick={onCancel}>Cancel</button>
         </CardContent>
       </form>
     </Card>

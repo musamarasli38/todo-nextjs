@@ -31,6 +31,7 @@ const Menubar = React.forwardRef<
       className
     )}
     {...props}
+    data-orientation="vertical"
   />
 ));
 Menubar.displayName = MenubarPrimitive.Root.displayName;
