@@ -66,38 +66,39 @@ export default function ListTasks() {
   };
 
   return (
-    <div className="flex flex-col px-4 gap-4">
-      <div>
-        <h1 className="text-3xl text-center pb-10">Your To-do List</h1>
-      </div>
-      <Accordion type="single" collapsible className="w-full ">
+    <div className="container mx-auto px-4 py-8 flex flex-col gap-6">
+      <h1 className="text-4xl font-bold text-center text-gray-800 pb-6">
+        Your To-do List
+      </h1>
+
+      <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="create">
-          <AccordionTrigger>
+          <AccordionTrigger className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium p-4 rounded-t-lg">
             <h3 className="text-xl font-bold">Create Task</h3>
           </AccordionTrigger>
-
-          <AccordionContent>
+          <AccordionContent className="bg-gray-50 p-4 rounded-b-lg shadow-inner">
             <TaskForm onTaskAdded={loadTasks} />
           </AccordionContent>
         </AccordionItem>
       </Accordion>
+
       <div>
-        <h2>Tasks:</h2>
-        <div className="flex flex-col gap-4">
+        <h2 className="text-2xl font-semibold text-gray-700">Tasks:</h2>
+        <div className="flex flex-col gap-6">
           {isPending ? (
-            <p>Loading tasks...</p>
+            <p className="text-gray-500">Loading tasks...</p>
           ) : error ? (
-            <p>{error}</p>
+            <p className="text-red-500">{error}</p>
           ) : (
-            <div className="flex flex-wrap justify-evenly p-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {tasks.length > 0 ? (
                 tasks.map((task) => (
                   <Accordion key={task.task_id} type="single" collapsible>
                     <AccordionItem value={String(task.task_id)}>
-                      <AccordionTrigger>
+                      <AccordionTrigger className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium p-4 rounded-t-lg">
                         <h3 className="text-xl font-bold">{task.title}</h3>
                       </AccordionTrigger>
-                      <AccordionContent>
+                      <AccordionContent className="bg-gray-50 p-4 rounded-b-lg shadow-inner">
                         {editingTaskId === String(task.task_id) ? (
                           <TaskForm
                             onTaskAdded={loadTasks}
@@ -109,33 +110,35 @@ export default function ListTasks() {
                             onCancel={handleCancel}
                           />
                         ) : (
-                          <Card className="bg-black text-white flex flex-col p-4">
+                          <Card className="bg-gradient-to-r from-gray-900 to-gray-700 text-white shadow-md rounded-lg p-6 flex flex-col justify-between">
                             <CardHeader>
-                              <h3 className="text-xl font-bold">
+                              <h3 className="text-2xl font-bold">
                                 {task.title}
                               </h3>
                             </CardHeader>
                             <CardContent>
-                              <p>
-                                <Calendar className="inline mr-2" />
+                              <p className="text-sm">
+                                <Calendar className="inline mr-2 text-gray-400" />
                                 {new Date(task.due_date).toLocaleDateString()}
                               </p>
-                              <p>{task.description}</p>
+                              <p className="mt-2">{task.description}</p>
                             </CardContent>
-                            <div className="flex gap-2">
+                            <div className="flex gap-4 mt-4">
                               <Button
-                                variant="ghost"
+                                className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-3 py-2"
                                 onClick={() => handleEdit(String(task.task_id))}
                               >
-                                <Edit className="text-blue-500" />
+                                <Edit className="mr-2" />
+                                Edit
                               </Button>
                               <Button
-                                variant="ghost"
+                                className="bg-red-500 hover:bg-red-600 text-white rounded-lg px-3 py-2"
                                 onClick={() =>
                                   handleDelete(task.task_id.toString())
                                 }
                               >
-                                <Trash2 className="text-red-500" />
+                                <Trash2 className="mr-2" />
+                                Delete
                               </Button>
                             </div>
                           </Card>
@@ -145,7 +148,7 @@ export default function ListTasks() {
                   </Accordion>
                 ))
               ) : (
-                <p>No tasks found.</p>
+                <p className="text-gray-500">No tasks found.</p>
               )}
             </div>
           )}
