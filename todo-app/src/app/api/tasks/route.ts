@@ -7,7 +7,7 @@ const pool = new Pool({
 
 export async function GET() {
   try {
-    const result = await pool.query('SELECT * FROM tasks ORDER BY due_date');
+    const result = await pool.query('SELECT * FROM task ORDER BY due_date');
     return NextResponse.json(result.rows);
   } catch (error) {
     console.error('Error fetching tasks:', error);
@@ -54,7 +54,7 @@ export async function PUT(req: Request) {
     values.push(task_id);
 
     const query = `
-      UPDATE tasks
+      UPDATE task
       SET ${fields.join(", ")}
       WHERE task_id = $${counter}
       RETURNING *;
@@ -82,7 +82,7 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: 'Task ID is required' }, { status: 400 });
     }
 
-    const result = await pool.query('DELETE FROM tasks WHERE task_id = $1', [id]);
+    const result = await pool.query('DELETE FROM task WHERE task_id = $1', [id]);
     if (result.rowCount === 0) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 });
     }

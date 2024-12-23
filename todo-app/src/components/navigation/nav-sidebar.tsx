@@ -14,27 +14,27 @@ import {
 const items = [
   {
     title: "Register",
-    url: "#",
+    url: "#/register",
     icon: Home,
   },
   {
     title: "About",
-    url: "#",
+    url: "/about",
     icon: Inbox,
   },
   {
     title: "Tasks",
-    url: "#",
+    url: "/tasks",
     icon: Calendar,
   },
   {
     title: "Login",
-    url: "#",
+    url: "/login",
     icon: Search,
   },
   {
     title: "Logout",
-    url: "#",
+    url: "/logout",
     icon: Settings,
   },
 ];

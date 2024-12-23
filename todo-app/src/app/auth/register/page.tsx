@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -9,6 +10,28 @@ export default function Register() {
     token: "",
   });
   const [error, setError] = useState("");
+  const router = useRouter();
+
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const res = await fetch("/api/auth/session");
+        console.log("Session endpoint response:", res);
+
+        if (!res.ok) throw new Error("Failed to fetch session");
+
+        const session = await res.json();
+        console.log("Session data:", session);
+
+        if (session?.user) {
+          router.push("/");
+        }
+      } catch (error) {
+        console.error("Error checking session:", error);
+      }
+    }
+    checkAuth();
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,6 +51,7 @@ export default function Register() {
     }
 
     alert("Registration successful!");
+    router.push("/api/auth/signin");
   };
 
   return (
