@@ -14,7 +14,7 @@ import {
 const items = [
   {
     title: "Register",
-    url: "#/register",
+    url: "/auth/register",
     icon: Home,
   },
   {
@@ -29,7 +29,7 @@ const items = [
   },
   {
     title: "Login",
-    url: "/login",
+    url: "/auth/login",
     icon: Search,
   },
   {
